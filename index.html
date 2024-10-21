@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión</title>
+     <link rel="stylesheet" href="css/login.css">   
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
+</head>
+<body>
+    
+    <form id="form-login">
+        <h1 class="animate__animated animate__backInLeft">Login de Usuario</h1>
+
+        <div class="text">
+            <input type="text" placeholder="Ingrese su Usuario" id="usuario" name="usuario" required>
+        
+            <input type="password" placeholder="Ingrese su contraseña" id="contra" name="contra" required>
+
+            <button type="submit" name="btnlogin" value="ok">Ingresar</button>
+        </div>
+        <div class="reg">
+            <a href="Registro.html">¿Aun no tienes cuenta? Registrate</a>
+        </div>
+        
+        <div id="alert-container"></div> <!-- Contenedor para las alertas -->
+    </form>
+
+    
+    <script>
+        $(document).ready(function() {
+            $("#form-login").on("submit", function(event) {
+                event.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: "Login.php",
+                    type: "POST",
+                    data: formData,
+                    dataType: 'json', // Especificamos que esperamos JSON
+                    success: function(response) {
+                        if(response.status === "success") {
+                            // Redirigimos según el tipo de usuario
+                            if(response.tipo_usuario === "medico") {
+                                window.location.href = 'panelmedico.php';
+                            } else if(response.tipo_usuario === "enfermero") {
+                                window.location.href = 'panelenfermero.php';
+                            }
+                        } else {
+                            $("#alert-container").html('<div class="alert alert-danger">' + response.message + '</div>');
+                        }
+                    },
+                    error: function() {
+                        $("#alert-container").html('<div class="alert alert-danger">Error al enviar los datos.</div>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
