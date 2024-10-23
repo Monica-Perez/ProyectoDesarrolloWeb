@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="css/login.css">   
+    <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
     <title>Registro de Usuario</title>
 </head>
+
 <body>
     <form id="form-registro" class="form-registro">
         <h1 class="animate__animated animate__backInLeft">Registro de Usuario</h1>
-        
+
         <div class="text">
             <input type="text" id="usuario" name="usuario" placeholder="Ingrese su Usuario" required>
 
@@ -22,67 +24,79 @@
                 <option value="medico">Médico</option>
                 <option value="enfermero">Enfermero</option>
             </select>
-            
-            <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Ingrese su nombre completo" required>
+
+            <!-- Campos para Médico (ocultos por defecto) -->
+            <div id="medico-fields" style="display: none;">
+                <input type="text" id="especialidad" name="especialidad" placeholder="Ingrese su especialidad">
+                <input type="number" id="colegiado" name="colegiado" placeholder="Ingrese su número de colegiado">
+            </div>
+
+            <input type="text" id="nombre_completo" name="nombre_completo" placeholder="Ingrese su nombre completo"
+                required>
 
             <input type="email" id="email" name="email" placeholder="Ingrese su correo electrónico" required>
+
+            <input type="number" id="dpi" name="dpi" placeholder="Ingrese su DPI" required>
+
+            <input type="text" id="direccion" name="direccion" placeholder="Ingrese su dirección" required>
+
+            <select name="sexo" id="sexo" required>
+                <option value="">Seleccione su sexo</option>
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+                <option value="otro">Otro</option>
+            </select>
+
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
         </div>
 
         <button type="submit" name="btnregistrar" value="ok">Registrarse</button>
 
         <div id="alert-container"></div> <!-- Contenedor para las alertas -->
     </form>
-<!-- 
-    <script>
-        $(document).ready(function() {
-          $("#form-registro").on("submit", function(event) {
-            event.preventDefault();
-        
-            var formData = $(this).serialize();
-        
-            $.ajax({
-                url: "registro.php",
-                type: "POST",
-                data: formData,
-                success: function(response) {
-                    // Mostrar la respuesta del servidor en el contenedor de alertas
-                    $("#alert-container").html(response);
-                },
-                error: function() {
-                    $("#alert-container").html('<div class="alert alert-danger">Ocurrió un error al enviar los datos.</div>');
-                }
-            });
-          });
-        });
-    </script> -->
 
     <script>
-        $(document).ready(function() {
-            $("#form-registro").on("submit", function(event) {
+
+        $(document).ready(function () {
+
+            // Mostrar/Ocultar campos según el tipo de usuario seleccionado
+            $("#tipo_usuario").on("change", function () {
+                if ($(this).val() === "medico") {
+                    $("#medico-fields").show(); // Mostrar campos si es médico
+                    $("#especialidad").attr("required", true);
+                    $("#colegiado").attr("required", true);
+                } else {
+                    $("#medico-fields").hide(); // Ocultar campos para otros tipos
+                    $("#especialidad").removeAttr("required");
+                    $("#colegiado").removeAttr("required");
+                }
+            })
+
+            $("#form-registro").on("submit", function (event) {
                 event.preventDefault();
-                
+
                 var formData = $(this).serialize();
-                
+
                 $.ajax({
                     url: "registro.php",
                     type: "POST",
                     data: formData,
-                    success: function(response) {
+                    success: function (response) {
                         try {
                             const data = JSON.parse(response);
-                            if(data.status === 'success') {
+                            if (data.status === 'success') {
                                 $("#alert-container").html('<div class="alert alert-success">' + data.message + '</div>');
-                                
-                                setTimeout(function() {window.location.href = 'index.html';}, 2000);
+
+                                setTimeout(function () { window.location.href = 'index.html'; }, 2000);
 
                             } else {
                                 $("#alert-container").html('<div class="alert alert-danger">' + data.message + '</div>');
                             }
-                        } catch(e) {
+                        } catch (e) {
                             $("#alert-container").html('<div class="alert alert-danger">Error en el formato de respuesta</div>');
                         }
                     },
-                    error: function() {
+                    error: function () {
                         $("#alert-container").html('<div class="alert alert-danger">Error al enviar los datos</div>');
                     }
                 });
@@ -91,4 +105,5 @@
     </script>
 
 </body>
+
 </html>

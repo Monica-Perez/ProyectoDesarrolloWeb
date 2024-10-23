@@ -22,7 +22,7 @@ if (!isset($_SESSION['user']) || $_SESSION['tipo_usuario'] !== 'medico') {
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="profile">
-            <img src="https://via.placeholder.com/80" alt="Doctor Profile">
+            <img src="Img/usuario.png" alt="Doctor Profile">
             <h3><?php echo htmlspecialchars($_SESSION['user']); ?></h3>
             <p>Médico General</p>
         </div>
